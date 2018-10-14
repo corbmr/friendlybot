@@ -55,7 +55,7 @@ type game struct {
 
 var games = [...]game{
 	game{"melee-friends", "melee", 0xE65F47},
-	game{"smash4-friends", "smash4", 0x479CF1},
+	game{"smash4-friends", "smash4", 0x42CE96},
 }
 
 type (
