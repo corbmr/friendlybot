@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	. "github.com/bwmarrin/discordgo"
 	"os"
@@ -12,10 +13,11 @@ import (
 var Token string
 
 func init() {
-	Token = os.Getenv("$FRIENDTOKEN")
+	flag.StringVar(&Token, "t", "", "Bot token")
+	flag.Parse()
 
 	if Token == "" {
-		fmt.Println("FRIENDTOKEN environment variable not set")
+		flag.Usage()
 		os.Exit(1)
 	}
 }
@@ -159,9 +161,9 @@ func toggleRole(s *Session, chID string, u *User, g int) {
 		return
 	}
 
-    rw.RLock()
+	rw.RLock()
 	rID := roleMap[ch.GuildID][g]
-    rw.RUnlock()
+	rw.RUnlock()
 
 	has := false
 	for _, r := range m.Roles {
