@@ -8,22 +8,35 @@ import (
 	"os/signal"
 	"strings"
 	"sync"
+	// "github.com/golang/groupcache/lru"
+	"bytes"
+	"io/ioutil"
 )
 
-var Token string
+var (
+	token string
+	kirby []byte
+)
 
 func init() {
-	flag.StringVar(&Token, "t", "", "Bot token")
+	flag.StringVar(&token, "t", "", "Bot token")
 	flag.Parse()
 
-	if Token == "" {
+	if token == "" {
 		flag.Usage()
 		os.Exit(1)
 	}
+
+	data, err := ioutil.ReadFile("kirby.png")
+    if err != nil {
+        fmt.Println("Unable to find kirby face")
+	}
+	
+	kirby = data
 }
 
 func main() {
-	dg, err := New("Bot " + Token)
+	dg, err := New("Bot " + token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
@@ -125,6 +138,13 @@ func guildJoinHandler(s *Session, g *GuildCreate) {
 }
 
 func messageCreateHandler(s *Session, m *MessageCreate) {
+
+	if strings.HasPrefix(lower, "good bot") && kirby.Size() > 0 {
+        go func() {
+            kirby.Seek(0, io.SeekStart)
+            s.ChannelFileSend(m.ChannelID, "kirby.png", kirby)
+        }()
+    }
 
 	command := strings.Fields(m.Content)
 
