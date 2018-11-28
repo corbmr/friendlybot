@@ -60,6 +60,8 @@ func main() {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt, os.Kill)
 	<-s
+
+	fmt.Println("Friendlybot shutting down")
 }
 
 type game struct {
