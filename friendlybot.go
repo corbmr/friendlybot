@@ -11,6 +11,7 @@ import (
 	// "github.com/golang/groupcache/lru"
 	"bytes"
 	"io/ioutil"
+	"regexp"
 )
 
 var (
@@ -137,12 +138,14 @@ func guildJoinHandler(s *Session, g *GuildCreate) {
 	getOrAddRoles(s, g.Guild)
 }
 
+var goodBotRegex = regexp.MustCompile(`(?i)^good bot`)
+
 func messageCreateHandler(s *Session, m *MessageCreate) {
 
-	if strings.HasPrefix(lower, "good bot") && kirby.Size() > 0 {
+	if goodBotRegex.MatchString(m.Content) && kirby != nil {
         go func() {
-            kirby.Seek(0, io.SeekStart)
-            s.ChannelFileSend(m.ChannelID, "kirby.png", kirby)
+			reader := bytes.NewReader(kirby)
+            s.ChannelFileSend(m.ChannelID, "kirby.png", reader)
         }()
     }
 
@@ -168,7 +171,7 @@ func messageCreateHandler(s *Session, m *MessageCreate) {
 
 }
 
-func toggleRole(s *Session, chID string, u *User, g int) {
+func toggleRole(s *Session, chID string, u *User, game int) {
 	ch, err := s.Channel(chID)
 	if err != nil {
 		fmt.Println("Unable to get channel", err)
@@ -182,7 +185,7 @@ func toggleRole(s *Session, chID string, u *User, g int) {
 	}
 
 	rw.RLock()
-	rID := roleMap[ch.GuildID][g]
+	rID := roleMap[ch.GuildID][game]
 	rw.RUnlock()
 
 	has := false
