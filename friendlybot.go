@@ -29,10 +29,10 @@ func init() {
 	}
 
 	data, err := ioutil.ReadFile("kirby.png")
-    if err != nil {
-        fmt.Println("Unable to find kirby face")
+	if err != nil {
+		fmt.Println("Unable to find kirby face")
 	}
-	
+
 	kirby = data
 }
 
@@ -72,6 +72,7 @@ type game struct {
 var games = [...]game{
 	game{"melee-friends", "melee", 0xE65F47},
 	game{"smash4-friends", "smash4", 0x42CE96},
+	game{"ultimate-friends", "ultimate", 0xf8c869},
 }
 
 type (
@@ -145,11 +146,11 @@ var goodBotRegex = regexp.MustCompile(`(?i)^good bot`)
 func messageCreateHandler(s *Session, m *MessageCreate) {
 
 	if goodBotRegex.MatchString(m.Content) && kirby != nil {
-        go func() {
+		go func() {
 			reader := bytes.NewReader(kirby)
-            s.ChannelFileSend(m.ChannelID, "kirby.png", reader)
-        }()
-    }
+			s.ChannelFileSend(m.ChannelID, "kirby.png", reader)
+		}()
+	}
 
 	command := strings.Fields(m.Content)
 
