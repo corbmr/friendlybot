@@ -124,11 +124,13 @@ func getOrAddRoles(s *Session, g *Guild) {
 			newRole, err := s.GuildRoleCreate(g.ID)
 			if err != nil {
 				log.Printf("Unable to create role %v for guild %s, %v\n", game.roleName, g.Name, err)
+				continue
 			}
 
 			newRole, err = s.GuildRoleEdit(g.ID, newRole.ID, game.roleName, game.color, false, 0, true)
 			if err != nil {
 				log.Printf("Unable to edit role %v for guild %s, %v\n", game.roleName, g.Name, err)
+				continue
 			}
 
 			found[command] = newRole.ID
@@ -166,6 +168,7 @@ func messageCreateHandler(s *Session, m *MessageCreate) {
 
 	if len(fields) < 2 {
 		s.ChannelMessageSend(m.ChannelID, "Usage: !f {melee, smash4, ultimate}")
+		return
 	}
 
 	if _, ok := commands[fields[1]]; ok {
