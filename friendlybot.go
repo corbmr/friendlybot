@@ -11,7 +11,6 @@ import (
 
 	// "github.com/golang/groupcache/lru"
 	"bytes"
-	"io/ioutil"
 	"log"
 	"regexp"
 )
@@ -30,7 +29,7 @@ func init() {
 		os.Exit(1)
 	}
 
-	data, err := ioutil.ReadFile("kirby.png")
+	data, err := Asset("kirby.png")
 	if err != nil {
 		log.Println("Unable to find kirby face")
 		return
